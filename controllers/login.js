@@ -14,7 +14,7 @@ try {
         res.status(404).json("User does not found");
     }
     else if(password!=userExists.password) {
-        res.status(400).json("Password does not match");
+        res.status(401).json("User not authorised");
     }
     else
         res.status(200).json("User logged in successfully");
