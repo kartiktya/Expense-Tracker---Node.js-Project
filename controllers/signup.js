@@ -1,6 +1,9 @@
 const User = require('../models/User');
 
-exports.addUser = async (req, res, next) => {
+const bcrypt = require('bcrypt');
+
+
+exports.addUser =  async (req, res, next) => {
 
 try {
 
@@ -8,9 +11,13 @@ try {
     const email = req.body.email;
     const password = req.body.password;
     //console.log('h1');
-    const data = await User.create( { name : name, email : email, password : password});
-    res.status(201).json( { newUserDetail : data } );
+    const saltRounds = 10;
+    bcrypt.hash(password, saltRounds, async (err, hash) => {
+        const data = await User.create( { name : name, email : email, password : hash});
+        res.status(201).json( { newUserDetail : data } );
 
+    });
+    
 }
 catch(err) {
     res.status(500).json({error: err});
