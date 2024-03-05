@@ -7,14 +7,15 @@ try {
     const email = req.body.email;
     const password = req.body.password;
 
-    const userExists = await User.findOne( { where: { email: email , password: password } } );
-    
+    const userExists = await User.findOne( { where: { email: email } } );
+    //const passwordExists = await User.findOne( { where : { password: password } });
+    //console.log(userExists.password);
     if(!userExists) {
         res.status(404).json("User does not found");
     }
-    // else if(password!=passwordExists) {
-    //     res.json("Password does not match");
-    // }
+    else if(password!=userExists.password) {
+        res.status(400).json("Password does not match");
+    }
     else
         res.status(200).json("User logged in successfully");
 

@@ -1,3 +1,4 @@
+
 function handleFormSubmit(event) {
 
     event.preventDefault();
@@ -29,19 +30,19 @@ function handleLoginSubmit(event) {
     const email = event.target.email.value;
     const password = event.target.password.value;
 
-    let userObject = {
+    let loginDetails = {
         email: email,
         password: password
     };
 
-    axios.post("http://localhost:3000/user/login", userObject)
+    axios.post("http://localhost:3000/user/login", loginDetails)
     .then((response) => {
-        console.log(response.status);
-        if(response.status==200)
+        //console.log(response.status);
+        if(response.status===200)
         alert('User logged in successfully');
     })
     .catch((error)=> {
-        document.body.innerHTML = document.body.innerHTML + '<h4> User not found </h4>'
-        console.log(error);
+        document.body.innerHTML = document.body.innerHTML + `<h4 style="color:red;"> ${error.message} </h4>`
+        //console.log(error);
      });
 }
