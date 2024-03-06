@@ -9,13 +9,14 @@ const app = express();
 
 app.use(cors());
 
-const signupRoutes = require('./routes/signup.js');
-const loginRoutes = require('./routes/login.js');
+const userRoutes = require('./routes/user.js');
+const expenseRoutes = require('./routes/expense.js');
 
 app.use(bodyParser.json({ extended: false }));
 
-app.use('/user', signupRoutes);
-app.use('/user', loginRoutes);
+app.use('/user', userRoutes);
+app.use('/expense', expenseRoutes);
+
 
 app.use('/', (req, res, next) => {
 
