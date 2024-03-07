@@ -5,6 +5,9 @@ var cors = require('cors');
 
 const sequelize = require('./util/database.js');
 
+const User = require('./models/User.js');
+const Expense = require('./models/Expense.js');
+
 const app = express();
 
 app.use(cors());
@@ -22,7 +25,12 @@ app.use('/', (req, res, next) => {
 
 });
 
-sequelize.sync()
+User.hasMany(Expense);
+Expense.belongsTo(User);
+
+sequelize
+.sync()
+//.sync({force: true})
 .then()
 .catch(err => console.log(err));
 

@@ -43,7 +43,9 @@ function handleLoginSubmit(event) {
         //console.log(response.status);
         if(response.status===200)
         alert('User logged in successfully');
+        localStorage.setItem('token', response.data.token);
         window.location.href = './expense.html';
+        
     })
     .catch((error)=> {
         document.body.innerHTML = document.body.innerHTML + `<h4 style="color:red;"> ${error.message} </h4>`
@@ -54,8 +56,9 @@ function handleLoginSubmit(event) {
 
 
 window.addEventListener("DOMContentLoaded", () => {
-   
-    axios.get("http://localhost:3000/expense/getExpenses")
+
+   const token = localStorage.getItem('token');
+    axios.get("http://localhost:3000/expense/getExpenses", { headers: { 'Authorization': token } })
          .then((response) => {
             
             for(let i=0; i<response.data.allExpenses.length; i++){
@@ -76,20 +79,26 @@ function handleExpenseSubmit(event) {
     const description = event.target.description.value;
     const category = event.target.category.value;
 
+    document.getElementById('expense-amount').value = null;
+    document.querySelector('#description').value = ' ';
+    document.getElementById('category').value = ' ';
+
     let expenseObject = {
         expenseAmount: expenseAmount,
         description: description,
         category : category
     };
 
-    axios.post("http://localhost:3000/expense/addExpense", expenseObject)
+    const token = localStorage.getItem('token');
+    //console.log(token);
+    axios.post("http://localhost:3000/expense/addExpense", expenseObject, { headers: {'Authorization': token} })
     .then((response) => {
         console.log(response.data.newExpenseDetail);
         showExpense(response.data.newExpenseDetail);
     })
     .catch((error)=> {
         document.body.innerHTML = document.body.innerHTML + `<h4 style="color:red;"> ${error.message} </h4>`
-        //console.log(error);
+       
      });
 }
 
@@ -108,6 +117,8 @@ function showExpense(obj) {
     //DELETE FUNCTIONALITY
     const deleteBtn = document.createElement("button");
     deleteBtn.innerHTML = "Delete";
+    deleteBtn.setAttribute('class','btn btn-danger');
+    deleteBtn.setAttribute('id','deleteBtn');
 
     newLi.appendChild(deleteBtn);
 
@@ -115,8 +126,8 @@ function showExpense(obj) {
     deleteBtn.addEventListener("click", function(event){
         
         var id = obj.id;
-
-        axios.delete(`http://localhost:3000/expense/deleteExpense/${id}`)
+        const token = localStorage.getItem('token');
+        axios.delete(`http://localhost:3000/expense/deleteExpense/${id}`, { headers: {'Authorization': token} })
                     .then((response)=>{
         
                         const childToDelete = event.target.parentElement;
