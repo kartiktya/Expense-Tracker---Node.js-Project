@@ -61,7 +61,7 @@ exports.login = async (req, res, next) => {
     
         bcrypt.compare(password, userExists.password, (err, result) => {
             if(result == true) {
-               return res.status(200).json({ message: 'User logged in successfully', token: generateAccessToken(userExists.id, userExists.name) });
+               return res.status(200).json({ message: 'User logged in successfully', token: generateAccessToken(userExists.id, userExists.name), user: userExists });
             }
             else {
                 return res.status(400).json("Password is incorrect");
@@ -81,4 +81,10 @@ exports.login = async (req, res, next) => {
         res.status(500).json({error: err});
      }
     
+}
+
+
+exports.getUser = async (req, res, next) => {
+    const user = req.user;
+    res.status(200).json({ user: user });
 }

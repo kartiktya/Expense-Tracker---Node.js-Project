@@ -1,3 +1,4 @@
+//const Razorpay = require("razorpay");
 
 function handleFormSubmit(event) {
 
@@ -40,11 +41,20 @@ function handleLoginSubmit(event) {
 
     axios.post("http://localhost:3000/user/login", loginDetails)
     .then((response) => {
-        //console.log(response.status);
+        //console.log(response.data.user.isPremiumUser);
+        var isPremiumUser = response.data.user.isPremiumUser;
         if(response.status===200)
         alert('User logged in successfully');
         localStorage.setItem('token', response.data.token);
         window.location.href = './expense.html';
+
+        // const childToDelete = document.getElementById('rzp-button1');
+        // const parentElement = document.querySelector('b');
+        // //console.log(parentElement);
+        // parentElement.removeChild(childToDelete);
+
+        // document.getElementById('premiumTxt').innerHTML = 'Premium User';
+
         
     })
     .catch((error)=> {
@@ -55,19 +65,65 @@ function handleLoginSubmit(event) {
 
 
 
-window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", async () => {
 
-   const token = localStorage.getItem('token');
-    axios.get("http://localhost:3000/expense/getExpenses", { headers: { 'Authorization': token } })
-         .then((response) => {
+    const token = localStorage.getItem('token');
+    
+    //   USING PROMISES
+    
+    // axios.get("http://localhost:3000/expense/getExpenses", { headers: { 'Authorization': token } })
+    //      .then((response) => {
+    //        // console.log('dom');
+    //         //console.log(isPremiumUser);
+    //         for(let i=0; i<response.data.allExpenses.length; i++){
+    //             showExpense(response.data.allExpenses[i]);
+    //         }
+
+    //      })
+    //      .catch((error) => console.log(error))
+
+
+    
+        //  axios.get("http://localhost:3000/user/getUser", { headers: { 'Authorization': token } })
+        //  .then((response) => {
+        //     console.log('dommmm');
+        //     //console.log(response.data.user.isPremiumUser);
+        //     const isPremiumUser = response.data.user.isPremiumUser;
+        //     if(isPremiumUser) {
+        //         const par = document.getElementById('imp');
+        //         const childToDelete = document.getElementById('rzp-button1');
+        //         const parentElement = document.querySelector('b');
+        //         console.log(par);
+        //         par.removeChild(childToDelete);
+
+        //         document.getElementById('premiumTxt').innerHTML = 'Premium User';
+        //     }
             
-            for(let i=0; i<response.data.allExpenses.length; i++){
-                showExpense(response.data.allExpenses[i]);
+
+        //  })
+        //  .catch((error) => console.log(error))
+
+
+        // USING ASYNC AWAIT
+         const response1 = await axios.get("http://localhost:3000/expense/getExpenses", { headers: { 'Authorization': token } });
+         
+         const response2 = await axios.get("http://localhost:3000/user/getUser", { headers: { 'Authorization': token } });
+         
+         for(let i=0; i<response1.data.allExpenses.length; i++){
+            showExpense(response1.data.allExpenses[i]);
+
+
+            const isPremiumUser = response2.data.user.isPremiumUser;
+            if(isPremiumUser) {
+                const par = document.getElementById('imp');
+                const childToDelete = document.getElementById('rzp-button1');
+                const parentElement = document.querySelector('b');
+                console.log(par);
+                par.removeChild(childToDelete);
+
+                document.getElementById('premiumTxt').innerHTML = 'Premium User';
             }
-
-         })
-         .catch((error) => console.log(error))
-
+        }
 } )
 
 
@@ -139,5 +195,47 @@ function showExpense(obj) {
 
     });
 
+
+}
+
+
+document.getElementById('rzp-button1').onclick = async function(e) {
+            
+
+    const token = localStorage.getItem('token');
+    const response = await axios.get('http://localhost:3000/purchase/premiumMembership', { headers: { 'Authorization':token } })
+    console.log(response);
+    
+    var options = {
+        'key' : response.data.key_id,
+        'order_id': response.data.order.id,
+        'handler': function(response) {
+
+            axios.post('http://localhost:3000/purchase/updateTransactionStatus', {
+                order_id : options.order_id,
+                payment_id: response.razorpay_payment_id
+            }, { headers: {'Authorization': token} })
+
+            window.alert('You are a Premium User Now');
+            
+            const childToDelete = e.target.parentElement;
+            const parentElement = document.querySelector('b');
+            //console.log(parentElement);
+            parentElement.removeChild(childToDelete);
+
+            document.getElementById('premiumTxt').innerHTML = 'Premium User';
+            
+        }
+    };
+
+    const rzp1 = new Razorpay(options);
+    rzp1.open();
+
+    e.preventDefault();
+
+    rzp1.on('payment.failed', (response) => {
+        console.log(response);
+        alert('Something went wrong')
+    });
 
 }

@@ -17,31 +17,50 @@
             margin:0.5%;
            
         }
+        #rzp-button1 {
+            
+            justify-content: right;
+            align-items: right;
+            
+            border: 3px solid green; 
+        }
         
     </style>
 </head>
   <body style="margin: 0">
     <div class="container">
-        <h1 style="text-align: center;">Expenses</h1><br><br>    
+        <h1 style="text-align: center;">Expenses</h1><br><br>     
+           
         <b>
-        <form style="text-align: center;" method="post" onsubmit="handleExpenseSubmit(event)" >
-            <label for="expense-amount">Choose Expense Amount:</label>
-            <input type="text" name="amount" id="expense-amount" required/>
-            <label for="description">Description:</label>
-            <input type="text" name="description" id="description" required/>
-            <label for="category">Choose Category:</label>
-            <select id="category">
-                <option value="fuel">Fuel</option>
-                <option value="food">Food</option>
-                <option value="electricity">Electricity</option>
-                <option value="movie">Movie</option>
-            </select>
-            <button type="submit" class="btn btn-primary">Add Expense</button><br><br>
-        </form><br><br>
-        
-        <div>
-            <ul></ul>
-        </div>
+            <div >
+                <h1 id="premiumTxt" style="text-align: end; font-size: 150%; color: red;"></h1>
+            </div>
+
+            <div id="imp" style="text-align: right;">
+                <button id="rzp-button1" type="submit" class="btn btn-secondary" >Buy Premium</button><br><br> 
+            </div>
+
+            <form style="text-align: center;" method="post" onsubmit="handleExpenseSubmit(event)" >
+                <label for="expense-amount">Choose Expense Amount:</label>
+                <input type="text" name="amount" id="expense-amount" required/>
+                <label for="description">Description:</label>
+                <input type="text" name="description" id="description" required/>
+                <label for="category">Choose Category:</label>
+                <select id="category">
+                    <option value="fuel">Fuel</option>
+                    <option value="food">Food</option>
+                    <option value="electricity">Electricity</option>
+                    <option value="movie">Movie</option>
+                </select>
+                <button type="submit" class="btn btn-primary">Add Expense</button><br><br>
+            </form><br><br>
+            
+            
+            <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+            <div>
+                <ul></ul>
+            </div>
         </b>    
     </div>
   </body>
