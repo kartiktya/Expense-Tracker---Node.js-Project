@@ -20,6 +20,7 @@ const premiumRoutes = require('./routes/premium.js');
 
 app.use(bodyParser.json({ extended: false }));
 
+
 app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);

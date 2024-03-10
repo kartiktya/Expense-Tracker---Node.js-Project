@@ -70,7 +70,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem('token');
     
     //   USING PROMISES
-    
+
     // axios.get("http://localhost:3000/expense/getExpenses", { headers: { 'Authorization': token } })
     //      .then((response) => {
     //        // console.log('dom');
@@ -84,46 +84,81 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
     
-        //  axios.get("http://localhost:3000/user/getUser", { headers: { 'Authorization': token } })
-        //  .then((response) => {
-        //     console.log('dommmm');
-        //     //console.log(response.data.user.isPremiumUser);
-        //     const isPremiumUser = response.data.user.isPremiumUser;
-        //     if(isPremiumUser) {
-        //         const par = document.getElementById('imp');
-        //         const childToDelete = document.getElementById('rzp-button1');
-        //         const parentElement = document.querySelector('b');
-        //         console.log(par);
-        //         par.removeChild(childToDelete);
+    //  axios.get("http://localhost:3000/user/getUser", { headers: { 'Authorization': token } })
+    //  .then((response) => {
+    //     console.log('dommmm');
+    //     //console.log(response.data.user.isPremiumUser);
+    //     const isPremiumUser = response.data.user.isPremiumUser;
+    //     if(isPremiumUser) {
+    //         const par = document.getElementById('imp');
+    //         const childToDelete = document.getElementById('rzp-button1');
+    //         const parentElement = document.querySelector('b');
+    //         console.log(par);
+    //         par.removeChild(childToDelete);
 
-        //         document.getElementById('premiumTxt').innerHTML = 'Premium User';
-        //     }
-            
+    //         document.getElementById('premiumTxt').innerHTML = 'Premium User';
+    //     }
+        
 
-        //  })
-        //  .catch((error) => console.log(error))
-
-
-        // USING ASYNC AWAIT
-         const response1 = await axios.get("http://localhost:3000/expense/getExpenses", { headers: { 'Authorization': token } });
-         
-         const response2 = await axios.get("http://localhost:3000/user/getUser", { headers: { 'Authorization': token } });
-         
-         for(let i=0; i<response1.data.allExpenses.length; i++){
-            showExpense(response1.data.allExpenses[i]);
+    //  })
+    //  .catch((error) => console.log(error))
 
 
-            const isPremiumUser = response2.data.user.isPremiumUser;
-            if(isPremiumUser) {
-                const par = document.getElementById('imp');
-                const childToDelete = document.getElementById('rzp-button1');
-                const parentElement = document.querySelector('b');
-                console.log(par);
-                par.removeChild(childToDelete);
+    // USING ASYNC AWAIT
+    const response1 = await axios.get("http://localhost:3000/expense/getExpenses", { headers: { 'Authorization': token } });
+    
+    const response2 = await axios.get("http://localhost:3000/user/getUser", { headers: { 'Authorization': token } });
+    
+    
+    for(let i=0; i<response1.data.allExpenses.length; i++){
+        showExpense(response1.data.allExpenses[i]);
 
-                document.getElementById('premiumTxt').innerHTML = 'Premium User';
-            }
+    }
+
+    const isPremiumUser = response2.data.user.isPremiumUser;
+        if(isPremiumUser) {
+            const par = document.getElementById('imp');
+            const childToDelete = document.getElementById('rzp-button1');
+            const parentElement = document.querySelector('b');
+            console.log(par);
+            par.removeChild(childToDelete);
+
+            document.getElementById('premiumTxt').innerHTML = 'Premium User';
+            showLeaderboard();
         }
+
+
+
+
+
+
+
+    // const response1 =  axios.get("http://localhost:3000/expense/getExpenses", { headers: { 'Authorization': token } });
+    
+    // const response2 =  axios.get("http://localhost:3000/user/getUser", { headers: { 'Authorization': token } });
+    
+    // Promise.all([response1, response2])
+    // .then(() => {
+
+    //     for(let i=0; i<response1.data.allExpenses.length; i++){
+    //         showExpense(response1.data.allExpenses[i]);
+
+
+    //         const isPremiumUser = response2.data.user.isPremiumUser;
+    //         if(isPremiumUser) {
+    //             const par = document.getElementById('imp');
+    //             const childToDelete = document.getElementById('rzp-button1');
+    //             const parentElement = document.querySelector('b');
+    //             console.log(par);
+    //             par.removeChild(childToDelete);
+
+    //             document.getElementById('premiumTxt').innerHTML = 'Premium User';
+    //         }
+    //     }      
+    // })
+    // .catch((err) => console.log(err));
+
+
 } )
 
 
@@ -151,6 +186,7 @@ function handleExpenseSubmit(event) {
     .then((response) => {
         console.log(response.data.newExpenseDetail);
         showExpense(response.data.newExpenseDetail);
+        
     })
     .catch((error)=> {
         document.body.innerHTML = document.body.innerHTML + `<h4 style="color:red;"> ${error.message} </h4>`
@@ -163,7 +199,8 @@ function showExpense(obj) {
     const newLi = document.createElement("li");
     newLi.innerHTML = obj.expenseAmount +" " +obj.description+" "+obj.category; 
 
-    const userList = document.querySelector("ul");
+    const userList = document.getElementById("allExpensesList");
+    console.log(userList);
     userList.appendChild(newLi);
 
     // const userList = document.querySelector("ul");
@@ -224,6 +261,7 @@ document.getElementById('rzp-button1').onclick = async function(e) {
             parentElement.removeChild(childToDelete);
 
             document.getElementById('premiumTxt').innerHTML = 'Premium User';
+            showLeaderboard();
             
         }
     };
@@ -232,10 +270,62 @@ document.getElementById('rzp-button1').onclick = async function(e) {
     rzp1.open();
 
     e.preventDefault();
-
+    //console.log('hhhhhhhhhhh1111111111');
     rzp1.on('payment.failed', (response) => {
-        console.log(response);
-        alert('Something went wrong')
+        console.log('hhhhhhhhhhh');
+        console.log(response.error.metadata.order_id);
+        console.log(response.error.metadata.payment_id);
+        const data = {
+            order_id: response.error.metadata.order_id ,
+            payment_id: response.error.metadata.payment_id
+        }
+        axios.post('http://localhost:3000/purchase/updateFailedTransactionStatus', data, { headers: { 'Authorization':token } })
+        .then(() => {
+            alert('Something went wrong');
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+        
     });
 
+}
+
+function showLeaderboard() {
+
+    const btn = document.createElement('button');
+    btn.innerHTML = 'Leaderboard';
+
+    document.getElementById('leaderboard').appendChild(btn);
+
+    btn.onclick = async function(event) {
+
+        const token = localStorage.getItem('token');
+        axios.get('http://localhost:3000/premium/showLeaderboard', { headers: { 'Authorization': token } })
+        .then((response) => {
+            console.log(response);
+            //console.log(response.data[3].name)
+            
+            const newH1 = document.createElement('h1');
+            newH1.innerHTML = 'LEADERBOARD';
+            const leaderboardUnorderedList = document.getElementById('leaderboardList');
+
+            leaderboardUnorderedList.appendChild(newH1);
+
+            for(let i=0 ;i<=response.data.length; i++) {
+
+            const newLi = document.createElement('li');
+        
+            newLi.innerHTML = `Name: ${response.data[i].name} Total Cost: ${response.data[i].totalCost}`;
+
+            
+            leaderboardUnorderedList.appendChild(newLi);
+
+            }
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+
+    }
 }

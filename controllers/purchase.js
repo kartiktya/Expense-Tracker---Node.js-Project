@@ -43,6 +43,8 @@ exports.updateTransactionStatus = async (req, res, next) => {
 
     //     const { payment_id, order_id } = req.body;
 
+    //      USING PROMISE ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
     //     Order.findOne( { where: { orderId: order_id } })
     //     .then((order) => {
     //         order.update( { paymentId: payment_id, status:'SUCCESSFUL' } )
@@ -69,17 +71,66 @@ exports.updateTransactionStatus = async (req, res, next) => {
     //     res.status(403).json({ message: 'Something went wrong', error: err });
     // }
 
+
+    // USING ASYNC AWAIT ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    // try {
+    //     const { payment_id, order_id } = req.body;
+
+    //     const order = await Order.findOne( { where: { orderId: order_id } });
+    //     await order.update( { paymentId: payment_id, status:'SUCCESSFUL' } );
+
+    //     await req.user.update( { isPremiumUser: true } );
+    //     res.status(202).json( { success: true, message: 'Transaction Successful' } );
+    // }
+    // catch(err) {
+    //     console.log(err);
+    //     res.status(403).json({ message: 'Something went wrong', error: err });
+    // }
+
+
+
+    // USING PROMISE.ALL ->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
     try {
         const { payment_id, order_id } = req.body;
 
         const order = await Order.findOne( { where: { orderId: order_id } });
-        order.update( { paymentId: payment_id, status:'SUCCESSFUL' } );
+        
+        const promise1 = order.update( { paymentId: payment_id, status:'SUCCESSFUL' } );
 
-        await req.user.update( { isPremiumUser: true } );
-        res.status(202).json( { success: true, message: 'Transaction Successful' } );
+        const promise2 = req.user.update( { isPremiumUser: true } );
+
+        Promise.all( [ promise1, promise2 ] )
+        .then(() => {
+            res.status(202).json( { success: true, message: 'Transaction Successful' } );
+        })
+        .catch((err) => {
+            throw new Error(err);
+        })
+        
     }
     catch(err) {
         console.log(err);
         res.status(403).json({ message: 'Something went wrong', error: err });
     }
+}
+
+exports.updateFailedTransactionStatus = async (req, res, next) => {
+
+    try {
+        const { payment_id, order_id } = req.body;
+
+        const order = await Order.findOne( { where: { orderId: order_id } });
+        
+        await order.update( { paymentId: payment_id, status:'FAILED' } );
+
+        return res.status(200).json('updated');
+
+        
+    }
+    catch(err) {
+        console.log(err);
+        res.status(403).json({ message: 'Something went wrong', error: err });
+    }
+
 }

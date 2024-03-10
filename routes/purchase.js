@@ -7,5 +7,7 @@ const router = express.Router();
 
 router.get('/premiumMembership', userAuthentication.authenticate , purchaseController.purchasePremium);
 router.post('/updateTransactionStatus', userAuthentication.authenticate , purchaseController.updateTransactionStatus);
+router.post('/updateFailedTransactionStatus', userAuthentication.authenticate , purchaseController.updateFailedTransactionStatus);
+
 
 module.exports = router;
