@@ -195,6 +195,11 @@ function handleExpenseSubmit(event) {
 }
 
 function showExpense(obj) {
+
+    // const newH1 = document.createElement('h1');
+    // newH1.innerHTML = 'Expenses';
+
+    // document.getElementById('expenseHeading').appendChild(newH1);
     
     const newLi = document.createElement("li");
     newLi.innerHTML = obj.expenseAmount +" " +obj.description+" "+obj.category; 
@@ -316,6 +321,10 @@ function showLeaderboard() {
 
             const newLi = document.createElement('li');
         
+            if(response.data[i].totalCost === null) {
+                response.data[i].totalCost = 0;
+            }
+
             newLi.innerHTML = `Name: ${response.data[i].name} Total Cost: ${response.data[i].totalCost}`;
 
             
