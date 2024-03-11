@@ -1,25 +1,30 @@
 const Expense = require('../models/Expense');
 
+const sequelize = require('../util/database');
+
 exports.addExpense =  async (req, res, next) => {
     try {
+
+        var t = await sequelize.transaction();
 
         const expenseAmount = req.body.expenseAmount;
         const description = req.body.description;
         const category = req.body.category;
-        //console.log('h1');
-        //console.log(req.user.id);
-        const data = await Expense.create( { expenseAmount : expenseAmount, description : description, category : category, userId: req.user.id});
-       // const totalExpense = Number()
-       const totalExpense = Number(req.user.totalExpense) + Number(expenseAmount);
-       console.log('hhhhhhhhhhhh');
-       console.log(totalExpense);
-       req.user.update({ totalExpense: totalExpense });
+
+        const data = await Expense.create( { expenseAmount : expenseAmount, description : description, category : category, userId: req.user.id}, { transaction: t });
+       
+        const totalExpense = Number(req.user.totalExpense) + Number(expenseAmount);
+       
+        await req.user.update({ totalExpense: totalExpense }, { transaction: t });
+
+        await t.commit();
 
         res.status(201).json( { newExpenseDetail : data } );
         
         
     }
     catch(err) {
+        await t.rollback();
         res.status(500).json({ error: err });
     }
 
@@ -42,25 +47,27 @@ exports.getExpenses = async (req, res, next) => {
 exports.deleteExpense = async (req, res, next) => {
     
     try {
+        var t = await sequelize.transaction();
+       
         const expenseId = req.params.expenseId;
-    
-        await Expense.destroy({ where: { id: expenseId, userId: req.user.id }})
 
-        //const expenseExists = await Expense.findByPk(expenseId);
-        //await expenseExists.destroy();
+        const expense = await Expense.findByPk(expenseId);
+ 
+        await Expense.destroy({ where: { id: expenseId, userId: req.user.id }}, {transaction: t});
+
+        const totalExpense = Number(req.user.totalExpense) - Number(expense.expenseAmount);
+        // console.log('hiiiiiiiiiiiiiiiiii');
+        // console.log(totalExpense);
+        
+        await req.user.update({ totalExpense: totalExpense }, { transaction: t });
+
+        await t.commit();
         res.status(200).json({ success: true, message: 'Deleted User' });
 
-        // Expense.findByPk(expenseId)
-        //.then(user => {
-        // return user.destroy();
-    // })
-    //   .then(result => {
-    //     console.log('DESTROYED USER');
-    //     res.send('deleted')
-    //   })
-    //   .catch(err => console.log(err));
+        
     }
     catch(err) {
+        await t.rollback();
         res.status(500).json({ error: err });
     }
 }
