@@ -321,11 +321,11 @@ function showLeaderboard() {
 
             const newLi = document.createElement('li');
         
-            if(response.data[i].totalCost === null) {
-                response.data[i].totalCost = 0;
+            if(response.data[i].totalExpense === null) {
+                response.data[i].totalExpense = 0;
             }
 
-            newLi.innerHTML = `Name: ${response.data[i].name} Total Cost: ${response.data[i].totalCost}`;
+            newLi.innerHTML = `Name: ${response.data[i].name} Total Cost: ${response.data[i].totalExpense}`;
 
             
             leaderboardUnorderedList.appendChild(newLi);

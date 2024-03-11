@@ -9,19 +9,30 @@ exports.showLeaderboard = async (req, res, next) => {
     try {
 
         const leaderboardUsers = await User.findAll({
-            attributes: ['id', 'name', [sequelize.fn('sum', sequelize.col('expenseAmount')), 'totalCost'] ],
-            include: [
-                {
-                    model: Expense,
-                    attributes: []
-                }
-            ],
-            group: ['user.id'],
-            order: [['totalCost', 'DESC']]
+            attributes: ['id', 'name', 'totalExpense'],
+            order: [['totalExpense', 'DESC']]
         });
+        res.status(200).json(leaderboardUsers);
 
-        return res.status(200).json(leaderboardUsers);
-        
+
+        // USING JOINS AND GROUP BY
+        // const leaderboardUsers = await User.findAll({
+        //     attributes: ['id', 'name', [sequelize.fn('sum', sequelize.col('expenseAmount')), 'totalCost'] ],
+        //     include: [
+        //         {
+        //             model: Expense,
+        //             attributes: []
+        //         }
+        //     ],
+        //     group: ['user.id'],
+        //     order: [['totalCost', 'DESC']]
+        // });
+
+        // return res.status(200).json(leaderboardUsers);
+
+
+
+        // USING GROUP BY        
         // const users = await User.findAll({
         //     attributes: ['id', 'name']
         // });

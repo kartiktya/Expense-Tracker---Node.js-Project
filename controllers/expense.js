@@ -9,6 +9,12 @@ exports.addExpense =  async (req, res, next) => {
         //console.log('h1');
         //console.log(req.user.id);
         const data = await Expense.create( { expenseAmount : expenseAmount, description : description, category : category, userId: req.user.id});
+       // const totalExpense = Number()
+       const totalExpense = Number(req.user.totalExpense) + Number(expenseAmount);
+       console.log('hhhhhhhhhhhh');
+       console.log(totalExpense);
+       req.user.update({ totalExpense: totalExpense });
+
         res.status(201).json( { newExpenseDetail : data } );
         
         
