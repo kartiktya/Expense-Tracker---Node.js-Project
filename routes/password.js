@@ -6,6 +6,8 @@ const passwordController = require('../controllers/password');
 const router = express.Router();
 
 router.post('/forgotPassword', passwordController.forgotPassword);
+router.get('/resetPassword/:id', passwordController.resetPassword);
+router.get('/updatePassword/:id', passwordController.updatePassword);
 
 
 module.exports = router;
