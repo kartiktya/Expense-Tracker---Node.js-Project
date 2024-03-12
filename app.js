@@ -17,6 +17,7 @@ const userRoutes = require('./routes/user.js');
 const expenseRoutes = require('./routes/expense.js');
 const purchaseRoutes = require('./routes/purchase.js');
 const premiumRoutes = require('./routes/premium.js');
+const passwordRoutes = require('./routes/password.js');
 
 app.use(bodyParser.json({ extended: false }));
 
@@ -25,6 +26,7 @@ app.use('/user', userRoutes);
 app.use('/expense', expenseRoutes);
 app.use('/purchase', purchaseRoutes);
 app.use('/premium', premiumRoutes);
+app.use('/password', passwordRoutes);
 
 
 app.use('/', (req, res, next) => {
