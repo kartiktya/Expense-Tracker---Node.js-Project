@@ -119,12 +119,13 @@ window.addEventListener("DOMContentLoaded", async () => {
         if(isPremiumUser) {
             const par = document.getElementById('imp');
             const childToDelete = document.getElementById('rzp-button1');
-            const parentElement = document.querySelector('b');
+            //const parentElement = document.querySelector('b');
             console.log(par);
             par.removeChild(childToDelete);
 
             document.getElementById('premiumTxt').innerHTML = 'Premium User';
             showLeaderboard();
+            showTimely();
         }
 
 
@@ -267,6 +268,7 @@ document.getElementById('rzp-button1').onclick = async function(e) {
 
             document.getElementById('premiumTxt').innerHTML = 'Premium User';
             showLeaderboard();
+            showTimely();
             
         }
     };
@@ -354,4 +356,29 @@ function handleForgotPasswordSubmit(event) {
         console.log(err);
     });
 
+}
+
+function showTimely() {
+
+    const dailyBtn = document.createElement('button');
+    const weeklyBtn = document.createElement('button');
+    const monthlyBtn = document.createElement('button');
+    const downloadBtn = document.createElement('button');
+
+    dailyBtn.innerHTML = 'Daily';
+    dailyBtn.setAttribute('id','dailyBtn');
+
+    weeklyBtn.innerHTML = 'Weekly';
+    weeklyBtn.setAttribute('id','weeklyBtn');
+
+    monthlyBtn.innerHTML = 'Monthly';
+    monthlyBtn.setAttribute('id','monthlyBtn');
+
+    downloadBtn.innerHTML = 'Download';
+    downloadBtn.setAttribute('id','downloadBtn');
+
+    document.getElementById('showTimelyBtn').appendChild(dailyBtn);
+    document.getElementById('showTimelyBtn').appendChild(weeklyBtn);
+    document.getElementById('showTimelyBtn').appendChild(monthlyBtn);
+    document.getElementById('showTimelyBtn').appendChild(downloadBtn);
 }
