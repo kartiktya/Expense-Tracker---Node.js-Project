@@ -105,7 +105,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
     // USING ASYNC AWAIT
-    const response1 = await axios.get("http://localhost:3000/expense/getExpenses", { headers: { 'Authorization': token } });
+    const page = 1;
+    const response1 = await axios.get(`http://localhost:3000/expense/getExpenses?page=${page}`, { headers: { 'Authorization': token } });
     
     const response2 = await axios.get("http://localhost:3000/user/getUser", { headers: { 'Authorization': token } });
     
@@ -114,6 +115,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         showExpense(response1.data.allExpenses[i]);
 
     }
+    showPagination(response1.data);
 
     const isPremiumUser = response2.data.user.isPremiumUser;
         if(isPremiumUser) {
@@ -160,8 +162,54 @@ window.addEventListener("DOMContentLoaded", async () => {
     // .catch((err) => console.log(err));
 
 
-} )
+} );
 
+function showPagination({
+    currentPage,
+    hasNextPage,
+    nextPage,
+    hasPreviousPage,
+    previousPage,
+    lastPage
+}) {
+
+    const pagination = document.getElementById('pagination');
+    pagination.innerHTML = '';
+
+    if(hasPreviousPage) {
+        const btn2 = document.createElement('button');
+        btn2.innerHTML = previousPage;
+        btn2.addEventListener('click', () => getExpenses(previousPage));
+        pagination.appendChild(btn2);
+    }
+
+        const btn1 = document.createElement('button');
+        btn1.innerHTML = `<h3>${currentPage}</h3>`;
+        btn1.addEventListener('click', () => getExpenses(currentPage));
+        pagination.appendChild(btn1);
+
+    if(hasNextPage) {
+        const btn3 = document.createElement('button');
+        btn3.innerHTML = nextPage;
+        btn3.addEventListener('click', () => getExpenses(nextPage));
+        pagination.appendChild(btn3);
+    }
+}
+function getExpenses(page) {
+
+    const token = localStorage.getItem('token');
+
+    axios.get(`http://localhost:3000/expense/getExpenses?page=${page}`, { headers: { 'Authorization': token } })
+    .then((response1) => {
+
+        for(let i=0; i<response1.data.allExpenses.length; i++){
+        showExpense(response1.data.allExpenses[i]);
+
+    }
+        showPagination(response1.data);
+    })
+    .catch((err) => console.log(err));
+}
 
 function handleExpenseSubmit(event) {
 

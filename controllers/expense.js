@@ -38,13 +38,45 @@ exports.addExpense =  async (req, res, next) => {
 
 exports.getExpenses = async (req, res, next) => {
     
-    try {
-        //const data = await Expense.findAll({ where: { userId: req.user.id }});
-        //or
-        const data = await req.user.getExpenses();
+    // try {
+    //     //const data = await Expense.findAll({ where: { userId: req.user.id }});
+    //     //or
+    //     const data = await req.user.getExpenses();
     
-        res.status(200).send({ allExpenses: data });
-    }
+    //     res.status(200).send({ allExpenses: data });
+    // }
+    // catch(err){
+    //     res.status(500).json({ error: err });
+    // }
+    
+    try {
+        const page = +req.query.page ;
+        console.log(page);
+        let totalExpenses;
+        const itemsPerPage = 10;
+
+        Expense.count()
+        .then((total) => {
+            totalExpenses = total;
+            return Expense.findAll( { where: { userId: req.user.id } }, {
+                offset: (page - 1) * itemsPerPage,
+                limit: itemsPerPage
+            });
+        })
+        .then((expenses) => {
+            console.log(expenses.length);
+            res.json({
+                allExpenses: expenses,
+                currentPage: page,
+                hasNextPage: itemsPerPage * page < totalExpenses,
+                nextPage: page + 1,
+                hasPreviousPage: page > 1,
+                previousPage: page - 1,
+                lastPage: Math.ceil(totalExpenses/itemsPerPage)
+            });
+        })
+        .catch((err) => console.log(err));
+    }   
     catch(err){
         res.status(500).json({ error: err });
     }
@@ -99,43 +131,6 @@ exports.downloadExpense = async (req, res, next) => {
 
 
 }
-// function  uploadToS3(data, fileNAme) {
-
-//     const BUCKET_NAME = 'expensetracker50';
-//     const IAM_USER_KEY_ID = 'AKIAYS2NSXYPPCDCTT3X';
-//     const IAM_USER_SECRET_KEY = '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';
-
-//     let s3Bucket = new AWS.S3({
-//         accessKeyId: IAM_USER_KEY_ID,
-//         secretAccessKey: IAM_USER_SECRET_KEY
-//     });
-    
-//     return new Promise((resolve, reject) => {
-
-//         // s3Bucket.createBucket(() => {
-//             var params = {
-//                 Bucket: BUCKET_NAME,
-//                 Key: fileNAme,
-//                 Body: data,
-//                 ACL: 'public-read'
-//             }
-//             s3Bucket.upload(params, (err, s3Response) => {
-//                 if(err) {
-//                     console.log('Something went wrong');
-//                     reject(err);
-//                 }
-//                 else {
-//                     console.log('Success', s3Response);
-//                     resolve(s3Response.Location);
-//                 }
-    
-//             })
-
-//     });
-
-   
-        
-// }
 
 
 exports.viewExpenseFilesDownloaded = async (req, res, next) => {
