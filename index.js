@@ -125,7 +125,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
             document.getElementById('premiumTxt').innerHTML = 'Premium User';
             showLeaderboard();
-            showTimely();
+            //showTimely();
         }
 
 
@@ -268,7 +268,7 @@ document.getElementById('rzp-button1').onclick = async function(e) {
 
             document.getElementById('premiumTxt').innerHTML = 'Premium User';
             showLeaderboard();
-            showTimely();
+            //showTimely();
             
         }
     };
@@ -358,27 +358,88 @@ function handleForgotPasswordSubmit(event) {
 
 }
 
-function showTimely() {
+function downloadExpense() {
 
-    const dailyBtn = document.createElement('button');
-    const weeklyBtn = document.createElement('button');
-    const monthlyBtn = document.createElement('button');
-    const downloadBtn = document.createElement('button');
+    // const dailyBtn = document.createElement('button');
+    // const weeklyBtn = document.createElement('button');
+    // const monthlyBtn = document.createElement('button');
+    // const downloadBtn = document.createElement('button');
 
-    dailyBtn.innerHTML = 'Daily';
-    dailyBtn.setAttribute('id','dailyBtn');
+    // dailyBtn.innerHTML = 'Daily';
+    // dailyBtn.setAttribute('id','dailyBtn');
 
-    weeklyBtn.innerHTML = 'Weekly';
-    weeklyBtn.setAttribute('id','weeklyBtn');
+    // weeklyBtn.innerHTML = 'Weekly';
+    // weeklyBtn.setAttribute('id','weeklyBtn');
 
-    monthlyBtn.innerHTML = 'Monthly';
-    monthlyBtn.setAttribute('id','monthlyBtn');
+    // monthlyBtn.innerHTML = 'Monthly';
+    // monthlyBtn.setAttribute('id','monthlyBtn');
 
-    downloadBtn.innerHTML = 'Download';
-    downloadBtn.setAttribute('id','downloadBtn');
+    // downloadBtn.innerHTML = 'Download';
+    // downloadBtn.setAttribute('id','downloadBtn');
 
-    document.getElementById('showTimelyBtn').appendChild(dailyBtn);
-    document.getElementById('showTimelyBtn').appendChild(weeklyBtn);
-    document.getElementById('showTimelyBtn').appendChild(monthlyBtn);
-    document.getElementById('showTimelyBtn').appendChild(downloadBtn);
+    // document.getElementById('showTimelyBtn').appendChild(dailyBtn);
+    // document.getElementById('showTimelyBtn').appendChild(weeklyBtn);
+    // document.getElementById('showTimelyBtn').appendChild(monthlyBtn);
+    // document.getElementById('showTimelyBtn').appendChild(downloadBtn);
+
+    
+    // downloadBtn.addEventListener('click', (event) => {
+
+        const token = localStorage.getItem('token');
+        axios.get('http://localhost:3000/user/downloadExpense', { headers: { 'Authorization': token } })
+        .then((response) => {
+            console.log('hhhhhhhhhhh');
+            if(response.status === 200) {
+                console.log('111111111111111111');
+                var a = document.createElement('a');
+                a.href = response.data.fileUrl;
+                console.log(a.href);
+                a.download = 'myExpense.csv';
+                a.click();
+            }
+            else {
+                throw new Error(response.data.message);
+            }
+            
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+
+    //})
+}
+
+function viewExpenseFilesDownloaded() {
+
+    const token = localStorage.getItem('token');
+    axios.get('http://localhost:3000/user/viewExpenseFilesDownloaded', { headers: { 'Authorization': token } })
+    .then((response) => {
+
+        const ul = document.getElementById('viewExpenseFilesDownloaded');
+
+        const newH1 = document.createElement('h1');
+        newH1.innerHTML = 'Expense Files Downloaded';
+
+        ul.appendChild(newH1);
+        
+        
+
+        for(let i=0; i<response.data.length; i++) {
+
+            const newLi = document.createElement('li');
+            const newA = document.createElement('a');
+            //newA.href = `Url: ${response.data[i].url}, Date: ${response.data[i].createdAt}`;
+            newA.href = `${response.data[i].url}`;
+            newA.innerHTML = `${response.data[i].createdAt}`;
+
+            newLi.appendChild(newA);
+            ul.appendChild(newLi);
+        }
+
+    })
+    .catch((error) => {
+        console.log(error);
+    })
+
+
 }

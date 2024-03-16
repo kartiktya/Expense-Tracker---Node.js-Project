@@ -37,7 +37,7 @@
             </div>
 
             <div id="imp" style="text-align: right;">
-                <button id="rzp-button1" type="submit" class="btn btn-secondary" >Buy Premium</button><br><br> 
+                <button id="rzp-button1" type="submit" class="btn btn-secondary" >Buy Premium</button><br>
             </div>
 
             <ul style="text-align: right;" id="leaderboard">
@@ -45,8 +45,12 @@
             </ul>
 
             <ul style="text-align: right;" id="showTimelyBtn">
-                <!-- <button id="leaderboard" type="submit" class="btn btn-secondary" >Show Leaderboard</button><br><br> -->
+                <button onclick="downloadExpense()" type="submit" class="btn btn-secondary" >Download</button>
             </ul>
+            
+            <div style="text-align: right;">
+                <button onclick="viewExpenseFilesDownloaded()" type="submit" class="btn btn-secondary" >View Files Downloaded</button><br><br>
+            </div>
 
             <form style="text-align: center;" method="post" onsubmit="handleExpenseSubmit(event)" >
                 <label for="expense-amount">Choose Expense Amount:</label>
@@ -66,7 +70,7 @@
             
             <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-            <h1 style="text-align: center;">Expenses</h1><br><br>
+            <!-- <h1 style="text-align: center;">Expenses</h1><br><br> -->
             
                 <ul id="allExpensesList"></ul><br><br>
             
@@ -74,6 +78,9 @@
             <div>
                 <ul id="leaderboardList"></ul>
             </div>
+
+            <ul id="viewExpenseFilesDownloaded"></ul>
+
         </b>    
     </div>
   </body>
