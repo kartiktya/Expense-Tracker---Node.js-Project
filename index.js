@@ -110,7 +110,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     
     const response2 = await axios.get("http://localhost:3000/user/getUser", { headers: { 'Authorization': token } });
     
-    
+
     for(let i=0; i<response1.data.allExpenses.length; i++){
         showExpense(response1.data.allExpenses[i]);
 
@@ -129,8 +129,6 @@ window.addEventListener("DOMContentLoaded", async () => {
             showLeaderboard();
             //showTimely();
         }
-
-
 
 
 
@@ -218,6 +216,9 @@ function handleExpenseSubmit(event) {
     const expenseAmount = event.target.amount.value;
     const description = event.target.description.value;
     const category = event.target.category.value;
+    const rowsPerPage = event.target.rowsPerPage.value;
+    console.log(rowsPerPage);
+    localStorage.setItem('rowsPerPage', rowsPerPage);
 
     document.getElementById('expense-amount').value = null;
     document.querySelector('#description').value = ' ';
