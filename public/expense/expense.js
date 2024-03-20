@@ -39,7 +39,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     // USING ASYNC AWAIT
     const page = 1;
-    const limit = localStorage.getItem('rowsPerPage');
+    let limit = localStorage.getItem('rowsPerPage');
+    if(limit === null) limit = 10;
     const response1 = await axios.get(`http://51.20.72.246:3000/expense/getExpenses?page=${page}&limit=${limit}`, { headers: { 'Authorization': token } });
     
     const response2 = await axios.get("http://51.20.72.246:3000/user/getUser", { headers: { 'Authorization': token } });
@@ -138,7 +139,8 @@ function showPagination({
 function getExpenses(page) {
 
     const token = localStorage.getItem('token');
-    const limit = localStorage.getItem('rowsPerPage');
+    let limit = localStorage.getItem('rowsPerPage');
+    if(limit === null) limit = 10;
     axios.get(`http://51.20.72.246:3000/expense/getExpenses?page=${page}&limit=${limit}`, { headers: { 'Authorization': token } })
     .then((response1) => {
 
