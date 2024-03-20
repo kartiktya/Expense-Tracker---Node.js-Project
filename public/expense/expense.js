@@ -39,7 +39,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     // USING ASYNC AWAIT
     const page = 1;
-    const response1 = await axios.get(`http://51.20.72.246:3000/expense/getExpenses?page=${page}`, { headers: { 'Authorization': token } });
+    const limit = localStorage.getItem('rowsPerPage');
+    const response1 = await axios.get(`http://51.20.72.246:3000/expense/getExpenses?page=${page}&limit=${limit}`, { headers: { 'Authorization': token } });
     
     const response2 = await axios.get("http://51.20.72.246:3000/user/getUser", { headers: { 'Authorization': token } });
     
@@ -48,6 +49,7 @@ window.addEventListener("DOMContentLoaded", async () => {
         showExpense(response1.data.allExpenses[i]);
 
     }
+    console.log(response1.data);
     showPagination(response1.data);
 
     const isPremiumUser = response2.data.user.isPremiumUser;
@@ -95,6 +97,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 } );
 
+var flag2 = true;
 function showPagination({
     currentPage,
     hasNextPage,
@@ -104,40 +107,47 @@ function showPagination({
     lastPage
 }) {
 
-    const pagination = document.getElementById('pagination');
-    pagination.innerHTML = '';
+    //if(flag2)
+    //{
+        console.log()
+        flag2 = false;
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
 
-    if(hasPreviousPage) {
-        const btn2 = document.createElement('button');
-        btn2.innerHTML = previousPage;
-        btn2.addEventListener('click', () => getExpenses(previousPage));
-        pagination.appendChild(btn2);
-    }
+        if(hasPreviousPage) {
+            const btn2 = document.createElement('button');
+            btn2.innerHTML = previousPage;
+            btn2.addEventListener('click', () => getExpenses(previousPage));
+            pagination.appendChild(btn2);
+        }
 
-        const btn1 = document.createElement('button');
-        btn1.innerHTML = `<h3>${currentPage}</h3>`;
-        btn1.addEventListener('click', () => getExpenses(currentPage));
-        pagination.appendChild(btn1);
+            const btn1 = document.createElement('button');
+            btn1.innerHTML = `<h3>${currentPage}</h3>`;
+            btn1.addEventListener('click', () => getExpenses(currentPage));
+            pagination.appendChild(btn1);
 
-    if(hasNextPage) {
-        const btn3 = document.createElement('button');
-        btn3.innerHTML = nextPage;
-        btn3.addEventListener('click', () => getExpenses(nextPage));
-        pagination.appendChild(btn3);
-    }
+        if(hasNextPage) {
+            const btn3 = document.createElement('button');
+            btn3.innerHTML = nextPage;
+            btn3.addEventListener('click', () => getExpenses(nextPage));
+            pagination.appendChild(btn3);
+        }
+    //}
 }
 
 function getExpenses(page) {
 
     const token = localStorage.getItem('token');
-
-    axios.get(`http://51.20.72.246:3000/expense/getExpenses?page=${page}`, { headers: { 'Authorization': token } })
+    const limit = localStorage.getItem('rowsPerPage');
+    axios.get(`http://51.20.72.246:3000/expense/getExpenses?page=${page}&limit=${limit}`, { headers: { 'Authorization': token } })
     .then((response1) => {
 
         for(let i=0; i<response1.data.allExpenses.length; i++){
         showExpense(response1.data.allExpenses[i]);
-
     }
+    console.log('responseeeeeeeeeeee');
+    console.log(response1.data);
+
         showPagination(response1.data);
     })
     .catch((err) => console.log(err));
@@ -376,37 +386,42 @@ function downloadExpense() {
     //})
 }
 
+
+var flag1 = true;
 function viewExpenseFilesDownloaded() {
+   
+    if(flag1) {
 
-    const token = localStorage.getItem('token');
-    axios.get('http://51.20.72.246:3000/user/viewExpenseFilesDownloaded', { headers: { 'Authorization': token } })
-    .then((response) => {
+        flag = false;
+        const token = localStorage.getItem('token');
+        axios.get('http://51.20.72.246:3000/user/viewExpenseFilesDownloaded', { headers: { 'Authorization': token } })
+        .then((response) => {
 
-        const ul = document.getElementById('viewExpenseFilesDownloaded');
+            const ul = document.getElementById('viewExpenseFilesDownloaded');
 
-        const newH1 = document.createElement('h1');
-        newH1.innerHTML = 'Expense Files Downloaded';
+            const newH1 = document.createElement('h1');
+            newH1.innerHTML = 'Expense Files Downloaded';
 
-        ul.appendChild(newH1);
-        
-        
+            ul.appendChild(newH1);
+            
+            
 
-        for(let i=0; i<response.data.length; i++) {
+            for(let i=0; i<response.data.length; i++) {
 
-            const newLi = document.createElement('li');
-            const newA = document.createElement('a');
-            //newA.href = `Url: ${response.data[i].url}, Date: ${response.data[i].createdAt}`;
-            newA.href = `${response.data[i].url}`;
-            newA.innerHTML = `${response.data[i].createdAt}`;
+                const newLi = document.createElement('li');
+                const newA = document.createElement('a');
+                //newA.href = `Url: ${response.data[i].url}, Date: ${response.data[i].createdAt}`;
+                newA.href = `${response.data[i].url}`;
+                newA.innerHTML = `${response.data[i].createdAt}`;
 
-            newLi.appendChild(newA);
-            ul.appendChild(newLi);
-        }
+                newLi.appendChild(newA);
+                ul.appendChild(newLi);
+            }
 
-    })
-    .catch((error) => {
-        console.log(error);
-    })
-
+        })
+        .catch((error) => {
+            console.log(error);
+        })
+    }
 
 }

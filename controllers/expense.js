@@ -1,5 +1,6 @@
 const Expense = require('../models/Expense');
 const ExpenseFilesDownloaded = require('../models/ExpenseFilesDownloaded');
+const User = require('../models/User');
 
 const sequelize = require('../util/database');
 
@@ -51,31 +52,58 @@ exports.getExpenses = async (req, res, next) => {
     
     try {
         const page = +req.query.page ;
-        console.log(page);
+        console.log('page========',page);
         let totalExpenses;
-        const itemsPerPage = 10;
+        const itemsPerPage = +req.query.limit;
+        console.log('itemsPerPage', itemsPerPage);
+        
+        console.log((page - 1) * itemsPerPage);
+        console.log(itemsPerPage);
+        
+        const userExpenses = await Expense.findAll({ where: { userId: req.user.id } });
 
-        Expense.count()
-        .then((total) => {
-            totalExpenses = total;
-            return Expense.findAll( { where: { userId: req.user.id } }, {
-                offset: (page - 1) * itemsPerPage,
-                limit: itemsPerPage
-            });
-        })
-        .then((expenses) => {
-            console.log(expenses.length);
+
+        const expenses = await req.user.getExpenses(  {
+            offset: (page - 1) * itemsPerPage,
+            limit: itemsPerPage
+            }, 
+            );
+
             res.json({
                 allExpenses: expenses,
                 currentPage: page,
-                hasNextPage: itemsPerPage * page < totalExpenses,
+                hasNextPage: itemsPerPage * page < userExpenses.length,
                 nextPage: page + 1,
                 hasPreviousPage: page > 1,
                 previousPage: page - 1,
-                lastPage: Math.ceil(totalExpenses/itemsPerPage)
+                lastPage: Math.ceil(userExpenses.length/itemsPerPage)
             });
-        })
-        .catch((err) => console.log(err));
+
+
+
+        // //Expense.count()
+        // //.then((total) => {
+        //    // totalExpenses = total;
+        //    console.log((page - 1) * itemsPerPage);
+        //    console.log(itemsPerPage);
+        //     Expense.findAll(  {
+        //         offset: (page - 1) * itemsPerPage,
+        //         limit: itemsPerPage
+        //     }, { where: { userId: req.user.id } })
+        // //})
+        // .then((expenses) => {
+        //     console.log(expenses.length);
+        //     res.json({
+        //         allExpenses: expenses,
+        //         currentPage: page,
+        //         hasNextPage: itemsPerPage * page < totalExpenses,
+        //         nextPage: page + 1,
+        //         hasPreviousPage: page > 1,
+        //         previousPage: page - 1,
+        //         lastPage: Math.ceil(totalExpenses/itemsPerPage)
+        //     });
+        // })
+        // .catch((err) => console.log(err));
     }   
     catch(err){
         res.status(500).json({ error: err });
