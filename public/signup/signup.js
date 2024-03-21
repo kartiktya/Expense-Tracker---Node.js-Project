@@ -12,7 +12,7 @@ function handleFormSubmit(event) {
         password: password
     };
 
-    axios.post("http://51.20.72.246:3000/user/signup", userObject)
+    axios.post("http://13.50.238.166:3000/user/signup", userObject)
     .then((response) => {
         console.log(response);
         

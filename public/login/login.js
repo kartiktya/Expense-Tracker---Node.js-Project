@@ -10,7 +10,7 @@ function handleLoginSubmit(event) {
         password: password
     };
 
-    axios.post("http://51.20.72.246:3000/user/login", loginDetails)
+    axios.post("http://13.50.238.166:3000/user/login", loginDetails)
     .then((response) => {
         //console.log(response.data.user.isPremiumUser);
         var isPremiumUser = response.data.user.isPremiumUser;

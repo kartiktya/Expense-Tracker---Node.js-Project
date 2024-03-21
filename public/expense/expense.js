@@ -4,7 +4,7 @@ window.addEventListener("DOMContentLoaded", async () => {
     
     //   USING PROMISES
 
-    // axios.get("http://51.20.72.246:3000/expense/getExpenses", { headers: { 'Authorization': token } })
+    // axios.get("http://13.50.238.166:3000/expense/getExpenses", { headers: { 'Authorization': token } })
     //      .then((response) => {
     //        // console.log('dom');
     //         //console.log(isPremiumUser);
@@ -17,7 +17,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
     
-    //  axios.get("http://51.20.72.246:3000/user/getUser", { headers: { 'Authorization': token } })
+    //  axios.get("http://13.50.238.166:3000/user/getUser", { headers: { 'Authorization': token } })
     //  .then((response) => {
     //     console.log('dommmm');
     //     //console.log(response.data.user.isPremiumUser);
@@ -41,9 +41,9 @@ window.addEventListener("DOMContentLoaded", async () => {
     const page = 1;
     let limit = localStorage.getItem('rowsPerPage');
     if(limit === null) limit = 10;
-    const response1 = await axios.get(`http://51.20.72.246:3000/expense/getExpenses?page=${page}&limit=${limit}`, { headers: { 'Authorization': token } });
+    const response1 = await axios.get(`http://13.50.238.166:3000/expense/getExpenses?page=${page}&limit=${limit}`, { headers: { 'Authorization': token } });
     
-    const response2 = await axios.get("http://51.20.72.246:3000/user/getUser", { headers: { 'Authorization': token } });
+    const response2 = await axios.get("http://13.50.238.166:3000/user/getUser", { headers: { 'Authorization': token } });
     
 
     for(let i=0; i<response1.data.allExpenses.length; i++){
@@ -70,9 +70,9 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
 
-    // const response1 =  axios.get("http://51.20.72.246:3000/expense/getExpenses", { headers: { 'Authorization': token } });
+    // const response1 =  axios.get("http://13.50.238.166:3000/expense/getExpenses", { headers: { 'Authorization': token } });
     
-    // const response2 =  axios.get("http://51.20.72.246:3000/user/getUser", { headers: { 'Authorization': token } });
+    // const response2 =  axios.get("http://13.50.238.166:3000/user/getUser", { headers: { 'Authorization': token } });
     
     // Promise.all([response1, response2])
     // .then(() => {
@@ -141,7 +141,7 @@ function getExpenses(page) {
     const token = localStorage.getItem('token');
     let limit = localStorage.getItem('rowsPerPage');
     if(limit === null) limit = 10;
-    axios.get(`http://51.20.72.246:3000/expense/getExpenses?page=${page}&limit=${limit}`, { headers: { 'Authorization': token } })
+    axios.get(`http://13.50.238.166:3000/expense/getExpenses?page=${page}&limit=${limit}`, { headers: { 'Authorization': token } })
     .then((response1) => {
 
         for(let i=0; i<response1.data.allExpenses.length; i++){
@@ -178,7 +178,7 @@ function handleExpenseSubmit(event) {
 
     const token = localStorage.getItem('token');
     //console.log(token);
-    axios.post("http://51.20.72.246:3000/expense/addExpense", expenseObject, { headers: {'Authorization': token} })
+    axios.post("http://13.50.238.166:3000/expense/addExpense", expenseObject, { headers: {'Authorization': token} })
     .then((response) => {
         console.log(response.data.newExpenseDetail);
         showExpense(response.data.newExpenseDetail);
@@ -221,7 +221,7 @@ function showExpense(obj) {
         
         var id = obj.id;
         const token = localStorage.getItem('token');
-        axios.delete(`http://51.20.72.246:3000/expense/deleteExpense/${id}`, { headers: {'Authorization': token} })
+        axios.delete(`http://13.50.238.166:3000/expense/deleteExpense/${id}`, { headers: {'Authorization': token} })
                     .then((response)=>{
         
                         const childToDelete = event.target.parentElement;
@@ -240,7 +240,7 @@ document.getElementById('rzp-button1').onclick = async function(e) {
             
 
     const token = localStorage.getItem('token');
-    const response = await axios.get('http://51.20.72.246:3000/purchase/premiumMembership', { headers: { 'Authorization':token } })
+    const response = await axios.get('http://13.50.238.166:3000/purchase/premiumMembership', { headers: { 'Authorization':token } })
     console.log(response);
     
     var options = {
@@ -248,7 +248,7 @@ document.getElementById('rzp-button1').onclick = async function(e) {
         'order_id': response.data.order.id,
         'handler': function(response) {
 
-            axios.post('http://51.20.72.246:3000/purchase/updateTransactionStatus', {
+            axios.post('http://13.50.238.166:3000/purchase/updateTransactionStatus', {
                 order_id : options.order_id,
                 payment_id: response.razorpay_payment_id
             }, { headers: {'Authorization': token} })
@@ -280,7 +280,7 @@ document.getElementById('rzp-button1').onclick = async function(e) {
             order_id: response.error.metadata.order_id ,
             payment_id: response.error.metadata.payment_id
         }
-        axios.post('http://51.20.72.246:3000/purchase/updateFailedTransactionStatus', data, { headers: { 'Authorization':token } })
+        axios.post('http://13.50.238.166:3000/purchase/updateFailedTransactionStatus', data, { headers: { 'Authorization':token } })
         .then(() => {
             alert('Something went wrong');
         })
@@ -302,7 +302,7 @@ function showLeaderboard() {
     btn.onclick = async function(event) {
 
         const token = localStorage.getItem('token');
-        axios.get('http://51.20.72.246:3000/premium/showLeaderboard', { headers: { 'Authorization': token } })
+        axios.get('http://13.50.238.166:3000/premium/showLeaderboard', { headers: { 'Authorization': token } })
         .then((response) => {
             console.log(response);
             //console.log(response.data[3].name)
@@ -365,7 +365,7 @@ function downloadExpense() {
     // downloadBtn.addEventListener('click', (event) => {
 
         const token = localStorage.getItem('token');
-        axios.get('http://51.20.72.246:3000/user/downloadExpense', { headers: { 'Authorization': token } })
+        axios.get('http://13.50.238.166:3000/user/downloadExpense', { headers: { 'Authorization': token } })
         .then((response) => {
             console.log('hhhhhhhhhhh');
             if(response.status === 200) {
@@ -396,7 +396,7 @@ function viewExpenseFilesDownloaded() {
 
         flag = false;
         const token = localStorage.getItem('token');
-        axios.get('http://51.20.72.246:3000/user/viewExpenseFilesDownloaded', { headers: { 'Authorization': token } })
+        axios.get('http://13.50.238.166:3000/user/viewExpenseFilesDownloaded', { headers: { 'Authorization': token } })
         .then((response) => {
 
             const ul = document.getElementById('viewExpenseFilesDownloaded');
