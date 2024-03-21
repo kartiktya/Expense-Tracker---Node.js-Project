@@ -394,7 +394,7 @@ function viewExpenseFilesDownloaded() {
    
     if(flag1) {
 
-        flag = false;
+        flag1 = false;
         const token = localStorage.getItem('token');
         axios.get('http://13.50.238.166:3000/user/viewExpenseFilesDownloaded', { headers: { 'Authorization': token } })
         .then((response) => {
