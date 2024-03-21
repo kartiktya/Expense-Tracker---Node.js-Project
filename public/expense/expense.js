@@ -299,39 +299,44 @@ function showLeaderboard() {
 
     document.getElementById('leaderboard').appendChild(btn);
 
+    var flag3 = true;
+
     btn.onclick = async function(event) {
 
-        const token = localStorage.getItem('token');
-        axios.get('http://13.50.238.166:3000/premium/showLeaderboard', { headers: { 'Authorization': token } })
-        .then((response) => {
-            console.log(response);
-            //console.log(response.data[3].name)
+        if(flag3) {
+            flag3 = false;
+
+            const token = localStorage.getItem('token');
+            axios.get('http://13.50.238.166:3000/premium/showLeaderboard', { headers: { 'Authorization': token } })
+            .then((response) => {
+                console.log(response);
+                //console.log(response.data[3].name)
+                
+                const newH1 = document.createElement('h1');
+                newH1.innerHTML = 'LEADERBOARD';
+                const leaderboardUnorderedList = document.getElementById('leaderboardList');
+
+                leaderboardUnorderedList.appendChild(newH1);
+
+                for(let i=0 ;i<=response.data.length; i++) {
+
+                const newLi = document.createElement('li');
             
-            const newH1 = document.createElement('h1');
-            newH1.innerHTML = 'LEADERBOARD';
-            const leaderboardUnorderedList = document.getElementById('leaderboardList');
+                if(response.data[i].totalExpense === null) {
+                    response.data[i].totalExpense = 0;
+                }
 
-            leaderboardUnorderedList.appendChild(newH1);
+                newLi.innerHTML = `Name: ${response.data[i].name} Total Cost: ${response.data[i].totalExpense}`;
 
-            for(let i=0 ;i<=response.data.length; i++) {
+                
+                leaderboardUnorderedList.appendChild(newLi);
 
-            const newLi = document.createElement('li');
-        
-            if(response.data[i].totalExpense === null) {
-                response.data[i].totalExpense = 0;
-            }
-
-            newLi.innerHTML = `Name: ${response.data[i].name} Total Cost: ${response.data[i].totalExpense}`;
-
-            
-            leaderboardUnorderedList.appendChild(newLi);
-
-            }
-        })
-        .catch((err) => {
-            console.log(err);
-        })
-
+                }
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        }
     }
 }
 
