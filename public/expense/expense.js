@@ -52,7 +52,8 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     }
     //console.log(response1.data);
-    showPagination(response1.data);
+    if(response1.data.allExpenses.length>=1)
+        showPagination(response1.data);
 
     const isPremiumUser = response2.data.user.isPremiumUser;
         if(isPremiumUser) {
